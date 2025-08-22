@@ -1,0 +1,40 @@
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id             Int      @id @default(autoincrement())
+  role_name      String   @unique
+  role_description String?
+  permissions    Json?
+  created_at     DateTime @default(now())
+  updated_at     DateTime @default(now())
+  users          User[]   // One-to-many with User
+}
+
+model User {
+  id             Int      @id @default(autoincrement())
+  username       String   @unique
+  email          String   @unique
+  password       String
+  first_name     String
+  last_name      String
+  phone          String?
+  role_id        Int
+  role           Role     @relation(fields: [role_id], references: [id])
+  is_active      Boolean  @default(true)
+  created_at     DateTime @default(now())
+  updated_at     DateTime @default(now())
+  last_login     DateTime?
+  created_by     Int?
+  creator        User?    @relation("UserCreatedBy", fields: [created_by], references: [id])
+  createdUsers   User[]   @relation("UserCreatedBy") // Users created by this user
+}
