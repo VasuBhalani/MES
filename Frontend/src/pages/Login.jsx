@@ -31,7 +31,6 @@ export default function Login() {
         {/* Logo or App Name */}
         <div className="flex flex-col items-center mb-6">
           <img src="automation.png" alt="Logo" className="w-14 h-14 mb-2" />
-          
         </div>
 
         <h2 className="text-center text-xl font-semibold text-gray-900 mb-6">
