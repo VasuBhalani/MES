@@ -1,31 +1,9 @@
 import authService from '../services/authService.js';
 import jwt from 'jsonwebtoken';
 import prisma from '../config/prismaClient.js';
-// const register = async (req, res) => {
-//   try {
-//     const userData = {
-//     username: req.body.username,
-//     name: req.body.name, 
-//     email: req.body.email,
-//     password: req.body.password,
-//     role: req.body.role || 'user',
-//   };
-
-
-//     const result = await authService.registerUser(userData);
-
-//     res.status(201).json({
-//       success: true,
-//       data: result,
-//     });
-//   } catch (error) {
-//     res.status(400).json({
-//       success: false,
-//       message: error.message,
-//     });
-//   }
-// };
-
+import {transporter} from '../config/email.js';
+// src/emails/resetPasswordEmailTemplate.js
+import {otpEmailTemplate} from '../utils/resetPasswordEmailTemplate.js';  
 export const login = async (req, res) => {
   try {
     // console.log(req.cookies.token);
