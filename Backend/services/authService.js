@@ -41,6 +41,8 @@ const loginUser = async (email, password) => {
     return {
       user: {
         id: user.id,
+        firstName: user.first_name,
+        lastName: user.last_name,
         username: user.username,
         email: user.email,
         role: user.role.role_name, // Optional
