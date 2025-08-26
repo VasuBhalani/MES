@@ -4,7 +4,7 @@ import { useAuth } from '../hooks/useAuth.js';
 import Login from '../pages/Login.jsx';
 import Loader from '../components/Loader.jsx';
 import AdminDashboard from '../pages/Dashboard/AdminDashboard.jsx';
-
+import {PasswordResetFlow} from '../components/Auth/PasswordResetFlow.jsx';
 // Dummy dashboards (replace with real components)
 const PurchaseDashboard = () => <div>Purchase Dashboard</div>;
 const QADashboard = () => <div>QA Dashboard</div>;
@@ -42,19 +42,19 @@ const RoleBasedDashboard = () => {
   const { user } = useAuth();
 
   switch (user?.role) {
-    case 'admin':
+    case 'Admin':
       return <Navigate to="/admin" replace />;
-    case 'purchase_staff':
+    case 'Purchase Staff':
       return <Navigate to="/purchase-dashboard" replace />;
-    case 'qa':
+    case 'QA Manager':
       return <Navigate to="/qa-dashboard" replace />;
-    case 'recipe_expert':
+    case 'Recipe Expert':
       return <Navigate to="/recipe-dashboard" replace />;
-    case 'production_head':
+    case 'Production Head':
       return <Navigate to="/production-dashboard" replace />;
-    case 'stock_manager':
+    case 'Stock Manager':
       return <Navigate to="/stock-dashboard" replace />;
-    case 'finance_officer':
+    case 'Finance Officer':
       return <Navigate to="/finance-dashboard" replace />;
     default:
       return <Navigate to="/unauthorized" replace />;
@@ -68,6 +68,7 @@ export default function AppRoutes() {
         {/* Public */}
         <Route path="/" element={<PublicRedirect />} />
         <Route path="/login" element={<PublicRedirect />} />
+        <Route path="/forgot-password" element={<PasswordResetFlow />} />
 
         {/* Protected Dashboard Redirect */}
         <Route
@@ -83,7 +84,7 @@ export default function AppRoutes() {
         <Route
           path="/admin"
           element={
-            <PrivateRoute allowedRoles={['admin']}>
+            <PrivateRoute allowedRoles={['Admin']}>
               <AdminDashboard />
             </PrivateRoute>
           }
@@ -93,7 +94,7 @@ export default function AppRoutes() {
         <Route
           path="/purchase-dashboard"
           element={
-            <PrivateRoute allowedRoles={['purchase_staff', 'admin']}>
+            <PrivateRoute allowedRoles={['Purchase Staff', 'Admin']}>
               <PurchaseDashboard />
             </PrivateRoute>
           }
@@ -101,7 +102,7 @@ export default function AppRoutes() {
         <Route
           path="/qa-dashboard"
           element={
-            <PrivateRoute allowedRoles={['qa', 'admin']}>
+            <PrivateRoute allowedRoles={['QA Manager', 'Admin']}>
               <QADashboard />
             </PrivateRoute>
           }
@@ -109,7 +110,7 @@ export default function AppRoutes() {
         <Route
           path="/recipe-dashboard"
           element={
-            <PrivateRoute allowedRoles={['recipe_expert', 'admin']}>
+            <PrivateRoute allowedRoles={['Recipe Expert', 'Admin']}>
               <RecipeDashboard />
             </PrivateRoute>
           }
@@ -117,7 +118,7 @@ export default function AppRoutes() {
         <Route
           path="/production-dashboard"
           element={
-            <PrivateRoute allowedRoles={['production_head', 'admin']}>
+            <PrivateRoute allowedRoles={['Production Head', 'Admin']}>
               <ProductionDashboard />
             </PrivateRoute>
           }
@@ -125,7 +126,7 @@ export default function AppRoutes() {
         <Route
           path="/stock-dashboard"
           element={
-            <PrivateRoute allowedRoles={['stock_manager', 'admin']}>
+            <PrivateRoute allowedRoles={['Stock Manager', 'Admin']}>
               <StockDashboard />
             </PrivateRoute>
           }
@@ -133,7 +134,7 @@ export default function AppRoutes() {
         <Route
           path="/finance-dashboard"
           element={
-            <PrivateRoute allowedRoles={['finance_officer', 'admin']}>
+            <PrivateRoute allowedRoles={['Finance Officer', 'Admin']}>
               <FinanceDashboard />
             </PrivateRoute>
           }
