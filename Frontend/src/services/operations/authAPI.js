@@ -1,6 +1,6 @@
 import { authEndpoints } from "../../features/auth/authEndpoints.js";
 import { apiConnector } from "../apiConnector.js";
-import { setLoading, setUser,Logout } from "../../features/auth/authSlice.js";
+import { setAuthLoading, setUser,logout } from "../../features/auth/authSlice.js";
 // import { setUser } from "../../fetures/";
 import toast from "react-hot-toast";
 
@@ -8,9 +8,10 @@ const { LOGIN, LOGOUT,SEND_OTP, VERIFY_OTP, UPDATE_PASSWORD } = authEndpoints;
 
 export function login(email, password, navigate) {
   return async (dispatch) => {
-    dispatch(setLoading(true));
+    dispatch(setAuthLoading(true));
     try {
       const response = await apiConnector("POST", LOGIN, { email, password });
+      
       
       if (!response.data.success) {
         throw new Error(response.data.message);
@@ -24,17 +25,17 @@ export function login(email, password, navigate) {
     } catch (error) {
       toast.error(error.response?.data?.message || "Login failed");
     } finally {
-      dispatch(setLoading(false));
+      dispatch(setAuthLoading(false));
     }
   };
 }
 
 
-export function logout(navigate) {
+export function Logout(navigate) {
   return async (dispatch) => {
     try {
       await apiConnector("POST", LOGOUT);
-      dispatch(Logout());
+      dispatch(logout());
       toast.success("Logged Out");
       navigate("/login");
     } catch (error) {
@@ -47,7 +48,7 @@ export function logout(navigate) {
 // One-off (non-Redux) async actions for password flows
 export const sendOtpForPasswordReset = async (data) => {
   try {
-    const response = await apiConnector("POST", SEND_OTP_API, data);
+    const response = await apiConnector("POST", SEND_OTP, data);
     if (!response.data?.success) throw new Error(response.data?.message || "Failed to send OTP");
     return response.data;
   } catch (error) {
@@ -58,7 +59,7 @@ export const sendOtpForPasswordReset = async (data) => {
 
 export const verifyOtpForPasswordReset = async (data) => {
   try {
-    const response = await apiConnector("POST", VERIFY_OTP_API, data);
+    const response = await apiConnector("POST", VERIFY_OTP, data);
     if (!response.data?.success) throw new Error(response.data?.message || "Failed to verify OTP");
     return response.data;
   } catch (error) {
@@ -69,7 +70,7 @@ export const verifyOtpForPasswordReset = async (data) => {
 
 export const updatePassword = async (data) => {
   try {
-    const response = await apiConnector("POST", UPDATE_PASSWORD_API, data);
+    const response = await apiConnector("POST", UPDATE_PASSWORD, data);
     if (!response.data?.success) throw new Error(response.data?.message || "Failed to update password");
     return response.data;
   } catch (error) {
