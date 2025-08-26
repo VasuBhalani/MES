@@ -108,3 +108,48 @@ export const createUser = async (req, res) => {
     });
   }
 };
+
+export const getAllUsers = async (req, res) => {
+  console.log('heelo req : -',req.user);
+  try {
+    const users = await prisma.user.findMany({
+      select: {
+        id: true,
+        email: true,
+        first_name: true,
+        last_name: true,
+        is_active: true,
+        role: {
+          select: {
+            role_name: true,
+          },
+        },
+      },
+       orderBy: {
+        created_at: "desc", 
+       }
+    });
+
+    // format response
+    const formattedUsers = users.map(user => ({
+      id: user.id,
+      name: `${user.first_name} ${user.last_name}`,
+      email: user.email,
+      is_active: user.is_active,
+      role_name: user.role.role_name,
+    }));
+
+    console.log('Fetched users:', formattedUsers);
+    res.status(200).json({
+      success: true,
+      data: formattedUsers,
+    });
+
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
