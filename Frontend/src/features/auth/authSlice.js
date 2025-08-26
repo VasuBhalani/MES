@@ -53,31 +53,32 @@
 // export const { setToken, setLoading, removeToken,initializeAuth  } = authSlice.actions;
 // export default authSlice.reducer;
 
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
+// Token cookie me hai; redux me sirf user + flags
 const initialState = {
   user: null,
-  loading: false,
   isAuthenticated: false,
+  loading: false,
 };
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
     setUser: (state, action) => {
-      state.user = action.payload;
-      state.isAuthenticated = true;
+      state.user = action.payload || null;
+      state.isAuthenticated = !!action.payload;
     },
-    setLoading: (state, action) => {
+    setAuthLoading: (state, action) => {
       state.loading = action.payload;
     },
-    Logout: (state) => {
+    logout: (state) => {
       state.user = null;
       state.isAuthenticated = false;
-    }
+    },
   },
 });
 
-export const { setUser, setLoading, Logout } = authSlice.actions;
+export const { setUser, setAuthLoading, logout } = authSlice.actions;
 export default authSlice.reducer;
