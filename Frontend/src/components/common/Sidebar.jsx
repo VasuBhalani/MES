@@ -11,7 +11,7 @@ import {
   BeakerIcon,
   ArrowRightOnRectangleIcon
 } from '@heroicons/react/24/outline';
-import { logout } from '../../services/operations/authAPI.js';
+import { Logout } from '../../services/operations/authAPI.js';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
@@ -51,7 +51,7 @@ const Sidebar = ({ userRole }) => {
   };
 
   const handleLogout = () => {
-      dispatch(logout(navigate));
+      dispatch(Logout(navigate));
   };
 
   const menuItems = getMenuItems(userRole);
