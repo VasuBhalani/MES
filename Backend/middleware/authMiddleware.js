@@ -43,18 +43,19 @@ export const isAdmin = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     // Now decoded.role will contain the user's role
-    console.log(decoded);
+    // console.log('Decoded',decoded);
      
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId },
       include: { role: true } // so you have role_name in req
     });
-    console.log(user);
-    if (user?.role.role_name !== 'admin') {
+
+    // console.log(user);
+    if (user?.role.role_name !== 'Admin') {
       return res.status(403).json({ message: 'Access denied: Admins only' });
     }
     req.user = decoded; // Attach decoded info to req
-    console.log(req.user);
+    // console.log(req.user);
     next();
   } catch (err) {
     return res.status(401).json({ message: 'Invalid or expired token' });
