@@ -1,8 +1,7 @@
-// src/hooks/useAuth.js
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setUser, setLoading, Logout } from '../features/auth/authSlice';
-import { apiConnector } from "../app/axios.js";
+import { setUser, setAuthLoading, logout } from '../features/auth/authSlice';
+import { apiConnector } from "../services/apiConnector.js";
 import { authEndpoints } from '../features/auth/authEndpoints.js';
 
 const { GET_ME } = authEndpoints;
@@ -14,14 +13,14 @@ export const useAuth = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      dispatch(setLoading(true));
+      dispatch(setAuthLoading(true));
       try {
         const res = await apiConnector("GET", GET_ME);
         dispatch(setUser(res.data.user));
       } catch (err) {
-        dispatch(Logout());
+        dispatch(logout());
       } finally {
-        dispatch(setLoading(false));
+        dispatch(setAuthLoading(false));
       }
     };
 
