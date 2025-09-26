@@ -153,3 +153,115 @@ export const getAllUsers = async (req, res) => {
     });
   }
 };
+
+export const getUserById = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const user = await prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        first_name: true,
+        last_name: true,
+        phone: true,
+        is_active: true,
+        role: {
+          select: {
+            id: true,
+            role_name: true,
+          },
+        },
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: user,
+    });
+
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+}
+
+export const deleteUser = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const user = await prisma.user.findUnique({ where: { id } });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    await prisma.user.delete({ where: { id } });
+
+    res.status(200).json({
+      success: true,
+      message: 'User deleted successfully',
+    });
+
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+}
+
+export const updateUser = async (req, res) => { 
+  try {
+    const { userId, role_id, is_active, ...otherData } = req.body;
+    console.log("Update payload:", req.body);
+
+    if (!userId) {
+      return res.status(400).json({ error: "userId is required." });
+    }
+
+    // Start building update object
+    const dataToUpdate = {
+      ...otherData,
+    };
+
+     
+    // Update is_active if provided
+      if (typeof is_active !== "undefined") {
+        dataToUpdate.is_active = is_active ? true : false;
+      }
+
+      console.log("Data to update:", dataToUpdate);
+
+    // Handle role relation update properly
+    if (role_id) {
+      dataToUpdate.role = {
+        connect: { id: Number(role_id) },
+      };
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: Number(userId) },
+      data: dataToUpdate,
+    });
+
+    res.json(updatedUser);
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
