@@ -4,7 +4,7 @@ import { sendOtp, verifyOtp,updatePassword} from '../controller/otpController.js
 const router = express.Router();
 
 // import bcrypt from 'bcryptjs';
-//  const hashedPassword = await bcrypt.hash("1234", 12);
+//  const hashedPassword = await bcrypt.hash("123456", 12);
 //  console.log('pass:',hashedPassword);
 
 router.get('/me',getMe);
