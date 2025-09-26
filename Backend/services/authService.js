@@ -18,8 +18,8 @@ const generateUsername = (firstName = '', lastName = '', email = '') => {
 };
 
 // JWT Token
-const generateToken = (userId) => {
-  return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '24h' });
+const generateToken = (data) => {
+  return jwt.sign(data, process.env.JWT_SECRET, { expiresIn: '24h' });
 };
 
 const loginUser = async (email, password) => {
@@ -36,7 +36,8 @@ const loginUser = async (email, password) => {
     const isMatch = await comparePassword(password, user.password);
     if (!isMatch) throw new Error('Invalid credentials');
 
-    const token = generateToken(user.id); // or user.email
+    const payload = { userId: user.id, role: user.role.role_name, email: user.email };
+    const token = generateToken(payload); // or user.email
 
     return {
       user: {
