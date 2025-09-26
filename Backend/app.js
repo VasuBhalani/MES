@@ -8,6 +8,7 @@ dotenv.config();
 // 📁 Import Routes
 import authRoutes from './routes/authRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
+import supplierRoutes from './routes/supplierRoutes.js';
 // 🚀 Initialize Express App
 const app = express();
 app.use(express.json());
@@ -37,6 +38,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth', authRoutes); // 🔐 Authentication Routes
 app.use('/api/admin', adminRoutes); 
+app.use('/api/suppliers', supplierRoutes); 
 // app.use('/api/product', productRoutes); //
 // app.use('/api/purchase', purchaseRoutes); //
 

@@ -38,3 +38,42 @@ model User {
   creator        User?    @relation("UserCreatedBy", fields: [created_by], references: [id])
   createdUsers   User[]   @relation("UserCreatedBy") // Users created by this user
 }
+
+model Supplier {
+  id                    Int              @id @default(autoincrement())
+  name                  String
+  contact_name          String?
+  phone                 String?
+  email                 String?          @unique
+  category              String?
+  address               String?
+  city                  String?          // Added field
+  state                 String?          // Added field
+  country               String?          // Added field
+  lat                   Float?           // Latitude coordinate
+  lng                   Float?           // Longitude coordinate
+  rating                Float?           @default(0)
+  status                String           @default("Active")
+  total_orders          Int              @default(0)
+  total_supplied_amount Float            @default(0)
+  created_at            DateTime         @default(now())
+  updated_at            DateTime?        @updatedAt
+  purchaseOrders        PurchaseOrder[]
+}
+
+
+model PurchaseOrder {
+  id                 Int       @id @default(autoincrement())
+  supplier_id        Int
+  item_name          String
+  quantity           Int
+  unit_price         Float
+  status             String    @default("Pending")
+  order_date         DateTime  @default(now())
+  delivery_date      DateTime?
+
+  supplier           Supplier  @relation(fields: [supplier_id], references: [id])
+
+  @@index([supplier_id])
+}
+
