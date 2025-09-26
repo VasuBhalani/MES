@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { NavLink, useNavigate } from "react-router-dom";
+
+import { useState } from "react";
 import { 
   HomeIcon, 
   UsersIcon, 
@@ -9,49 +11,59 @@ import {
   ChartBarIcon,
   CurrencyDollarIcon,
   BeakerIcon,
-  ArrowRightOnRectangleIcon
+  ArrowRightOnRectangleIcon,
+  ClipboardDocumentListIcon,
+  CubeIcon 
 } from '@heroicons/react/24/outline';
 import { Logout } from '../../services/operations/authAPI.js';
-import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 const Sidebar = ({ userRole }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [activeItem, setActiveItem] = useState('Dashboard');
 
   const getMenuItems = (role) => {
     const commonItems = [
-      { name: 'Dashboard', icon: HomeIcon, href: '/dashboard' },
+      { name: 'Dashboard', icon: HomeIcon, href: '.' }, // relative
     ];
 
     const roleSpecificItems = {
-      admin: [
-        { name: 'User Management', icon: UsersIcon, href: '/users' },
-        // { name: 'System Settings', icon: CogIcon, href: '/settings' },
-        { name: 'Access Control', icon: ShieldCheckIcon, href: '/access' },
-        { name: 'Activity Logs', icon: DocumentTextIcon, href: '/logs' },
-        { name: 'Alerts & Issues', icon: ExclamationTriangleIcon, href: '/alerts' },
-      ],
-      qa: [
-        { name: 'Test Management', icon: BeakerIcon, href: '/tests' },
-        { name: 'Quality Reports', icon: DocumentTextIcon, href: '/quality-reports' },
-        { name: 'Bug Tracking', icon: ExclamationTriangleIcon, href: '/bugs' },
-        { name: 'Test Analytics', icon: ChartBarIcon, href: '/test-analytics' },
-      ],
-      finance: [
-        { name: 'Financial Reports', icon: CurrencyDollarIcon, href: '/finance-reports' },
-        { name: 'Budget Management', icon: ChartBarIcon, href: '/budget' },
-        { name: 'Transactions', icon: DocumentTextIcon, href: '/transactions' },
-        { name: 'Financial Analytics', icon: ChartBarIcon, href: '/finance-analytics' },
-      ]
-    };
+  admin: [
+    { name: 'User Management', icon: UsersIcon, href: 'users' },
+    { name: 'Access Control', icon: ShieldCheckIcon, href: 'access' },
+    { name: 'Activity Logs', icon: DocumentTextIcon, href: 'logs' },
+    { name: 'Alerts & Issues', icon: ExclamationTriangleIcon, href: 'alerts' },
+  ],
+  qa: [
+    { name: 'Test Management', icon: BeakerIcon, href: 'tests' },
+    { name: 'Quality Reports', icon: DocumentTextIcon, href: 'quality-reports' },
+    { name: 'Bug Tracking', icon: ExclamationTriangleIcon, href: 'bugs' },
+    { name: 'Test Analytics', icon: ChartBarIcon, href: 'test-analytics' },
+  ],
+  finance: [
+    { name: 'Financial Reports', icon: CurrencyDollarIcon, href: 'finance-reports' },
+    { name: 'Budget Management', icon: ChartBarIcon, href: 'budget' },
+    { name: 'Transactions', icon: DocumentTextIcon, href: 'transactions' },
+    { name: 'Financial Analytics', icon: ChartBarIcon, href: 'finance-analytics' },
+  ],
+  purchase: [   // New role-specific Purchase Dashboard items
+    { name: 'Orders', icon: ClipboardDocumentListIcon, href: 'orders' },
+    { name: 'Create Order', icon: ClipboardDocumentListIcon, href: 'orders/new' },
+    { name: 'Suppliers', icon: UsersIcon, href: 'suppliers' },
+    // { name: 'Add Supplier', icon: UsersIcon, href: 'purchase/suppliers/new' },
+    { name: 'Inventory', icon: CubeIcon, href: 'inventory' },
+    { name: 'Reorder Alerts', icon: ExclamationTriangleIcon, href: 'reorder-alerts' },
+    { name: 'Material Cost Trends', icon: ChartBarIcon, href: 'cost-trends' },
+    { name: 'Purchase Reports', icon: DocumentTextIcon, href: 'reports' },
+  ]
+};
+
 
     return [...commonItems, ...(roleSpecificItems[role] || [])];
   };
 
   const handleLogout = () => {
-      dispatch(Logout(navigate));
+    dispatch(Logout(navigate));
   };
 
   const menuItems = getMenuItems(userRole);
@@ -74,49 +86,25 @@ const Sidebar = ({ userRole }) => {
         <nav className="space-y-1">
           {menuItems.map((item) => {
             const Icon = item.icon;
-            const isActive = activeItem === item.name;
-
             return (
-              <a
+              <NavLink
                 key={item.name}
-                href={item.href}
-                onClick={() => setActiveItem(item.name)}
-                className={`flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-                  isActive
-                    ? 'bg-blue-100 text-blue-700 border-r-4 border-blue-600'
-                    : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'
-                }`}
+                to={item.href}
+                end
+                className={({ isActive }) =>
+                  `flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                    isActive
+                      ? 'bg-blue-100 text-blue-700 border-r-4 border-blue-600'
+                      : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'
+                  }`
+                }
               >
-                <Icon className={`mr-3 h-5 w-5 ${isActive ? 'text-blue-600' : 'text-gray-500'}`} />
+                <Icon className="mr-3 h-5 w-5" />
                 {item.name}
-              </a>
+              </NavLink>
             );
           })}
         </nav>
-
-        {userRole === 'admin' && (
-          <div className="mt-8">
-            <p className="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-3">
-              Reports
-            </p>
-            <nav className="space-y-1">
-              <a
-                href="/analytics"
-                className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-blue-50 hover:text-blue-600"
-              >
-                <ChartBarIcon className="mr-3 h-5 w-5 text-gray-500" />
-                Analytics
-              </a>
-              <a
-                href="/system-reports"
-                className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-blue-50 hover:text-blue-600"
-              >
-                <DocumentTextIcon className="mr-3 h-5 w-5 text-gray-500" />
-                System Reports
-              </a>
-            </nav>
-          </div>
-        )}
       </div>
 
       {/* Logout Button at Bottom */}
