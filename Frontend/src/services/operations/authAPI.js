@@ -16,7 +16,7 @@ export function login(email, password, navigate) {
       if (!response.data.success) {
         throw new Error(response.data.message);
       }
-
+      console.log("response from login api",response.data.data);   
       dispatch(setUser(response.data.data));
       
       toast.success("Login successful!");
