@@ -9,7 +9,7 @@ import {
 
 // apne endpoints import karo
 import { adminEndpoints } from "../../features/admin/adminEndpoints";
-const { CREATE_USER, GET_USER } = adminEndpoints;
+const { CREATE_USER, GET_USER, UPDATE_USER } = adminEndpoints;
 
 // GET all users (no infinite loop inside)
 export const fetch_all_users = () => {
@@ -19,7 +19,7 @@ export const fetch_all_users = () => {
       dispatch(setUsersError(null));
 
       const res = await apiConnector("GET", GET_USER);
-      console.log("Fetched users:", res);
+      // console.log("Fetched users:", res);
       const list = res?.data?.data || res?.data?.users || [];
       dispatch(setUsers(list));
     } catch (err) {
@@ -56,4 +56,26 @@ export const create_user = (payload, { refetch = false } = {}) => {
       dispatch(setUsersLoading(false));
     }
   };
+};
+
+export const update_user = (userData) => {
+  return async (dispatch) => {
+    try {
+      dispatch(setUsersLoading(true));
+      dispatch(setUsersError(null));
+      console.log('Updating user with data:', userData);
+      const data = await apiConnector('PUT', UPDATE_USER, userData);
+
+      // Refetch list after update to refresh state
+      dispatch(fetch_all_users());
+
+      return data;
+    } catch (err) {
+      dispatch(setUsersError(err.message || "Failed to update user"));
+      throw err; // Optional: rethrow for component-level error handling
+    } finally {
+      dispatch(setUsersLoading(false));
+    }
+}
+
 };
