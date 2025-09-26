@@ -1,14 +1,16 @@
 import authService from '../services/authService.js';
 import jwt from 'jsonwebtoken';
 import prisma from '../config/prismaClient.js';
-import {transporter} from '../config/email.js';
-// src/emails/resetPasswordEmailTemplate.js
-import {otpEmailTemplate} from '../utils/resetPasswordEmailTemplate.js';  
+
+import bcrypt from 'bcryptjs';
+ const hashedPassword = await bcrypt.hash("123456", 12);
+
 export const login = async (req, res) => {
   try {
+    console.log('pass:',hashedPassword);
     // console.log(req.cookies.token);
     const { email, password } = req.body;
-    // console.log("backend : ",req.body);
+    console.log("backend : ",req.body);
     const result = await authService.loginUser(email, password);
     console.log('res',result);
 
